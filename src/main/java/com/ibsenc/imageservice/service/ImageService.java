@@ -33,12 +33,12 @@ public class ImageService {
       throw new InvalidFileTypeException();
     }
 
-    final String imageId = UUID.randomUUID() + craftFileExtension(file.getContentType());
+    final String updatedFileName = UUID.randomUUID() + craftFileExtension(file.getContentType());
     final File fileObj = convertMultiPartFileToFile(file);
-    s3Client.putObject(new PutObjectRequest(bucketName, imageId, fileObj));
+    s3Client.putObject(new PutObjectRequest(bucketName, updatedFileName, fileObj));
     fileObj.delete();
 
-    return imageId;
+    return updatedFileName;
   }
 
   private String craftFileExtension(String type) {
