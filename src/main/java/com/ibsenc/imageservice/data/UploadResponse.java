@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UploadResponse {
+
   @JsonProperty("image_id")
   private String imageId;
 }

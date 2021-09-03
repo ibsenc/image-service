@@ -24,7 +24,8 @@ public class ImageServiceController {
   private ImageService service;
 
   @PostMapping("/upload")
-  public ResponseEntity<UploadResponse> uploadImage(@RequestParam(value = "file") MultipartFile file) {
+  public ResponseEntity<UploadResponse> uploadImage(
+      @RequestParam(value = "file") MultipartFile file) {
     final String imageId = service.uploadImage(file);
     return new ResponseEntity<>(new UploadResponse(imageId), HttpStatus.OK);
   }
