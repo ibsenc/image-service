@@ -5,15 +5,18 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+import com.ibsenc.imageservice.exceptions.InvalidFileTypeException;
+import com.ibsenc.imageservice.exceptions.InvalidInputException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 @Service
 @Slf4j
@@ -25,29 +28,31 @@ public class ImageService {
   @Autowired
   private AmazonS3 s3Client;
 
-  public String uploadFile(MultipartFile file) {
-    File fileObj = convertMultiPartFileToFile(file);
-    String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-    s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+  public String uploadImage(MultipartFile file) {
+    if (!Arrays.asList("image/png", "image/jpeg").contains(file.getContentType())) {
+      throw new InvalidFileTypeException();
+    }
+
+    final String imageId = UUID.randomUUID() + craftFileExtension(file.getContentType());
+    final File fileObj = convertMultiPartFileToFile(file);
+    s3Client.putObject(new PutObjectRequest(bucketName, imageId, fileObj));
     fileObj.delete();
-    return "File uploaded : " + fileName;
+
+    return imageId;
   }
 
-  public byte[] downloadFile(String fileName) {
+  private String craftFileExtension(String type) {
+    return "." + type.split("/")[1];
+  }
+
+  public byte[] getImage(String fileName) throws IOException {
     S3Object s3Object = s3Client.getObject(bucketName, fileName);
     S3ObjectInputStream inputStream = s3Object.getObjectContent();
-    try {
-      byte[] content = IOUtils.toByteArray(inputStream);
-      return content;
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return null;
+    return IOUtils.toByteArray(inputStream);
   }
 
-  public String deleteFile(String fileName) {
+  public void deleteImage(String fileName) {
     s3Client.deleteObject(bucketName, fileName);
-    return fileName + " removed ...";
   }
 
   private File convertMultiPartFileToFile(MultipartFile file) {
@@ -55,7 +60,7 @@ public class ImageService {
     try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
       fos.write(file.getBytes());
     } catch (IOException e) {
-      log.error("Error converting multipartFile to file", e);
+      throw new InvalidInputException("Error converting MultipartFile to file.");
     }
     return convertedFile;
   }

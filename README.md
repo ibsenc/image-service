@@ -23,28 +23,7 @@ https://www.youtube.com/watch?v=vY7c7k8xmKE&ab_channel=JavaTechie
 - Create an environment variable containing your AWS secret key using command: `export AWS_SECRET_KEY=your_secret_key`
 
 #### Postman:
-- Set up a new Postman environment using url "http://localhost:8081" (or server port of choice)
-- Upload Image Endpoint:
-    - Method: `POST`
-    - Path: `/file/upload`
-    - Set Body to `form-data` and create parameter:
-        - Key: `file`
-        - Select type "File" instead of "Text"
-        - Value: select your image
-    
-- Get Image Endpoint:
-    - Method: `GET`
-    - Path: `/file/download/:fileName`
-    - Path variable:
-        - Key: `fileName`
-        - Value: `example_image.jpeg`
-
-- Delete Image Endpoint:
-    - Method: `DELETE`
-    - Path: `/file/delete/:fileName`
-    - Path variable:
-        - Key: `fileName`
-        - Value: `example_image.jpeg`
+- See postman API collection under Postman directory.
     
 ### Clean, Build, and Run the Program:
 #### To clean the project:
