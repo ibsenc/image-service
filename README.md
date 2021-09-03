@@ -54,4 +54,4 @@ https://www.youtube.com/watch?v=vY7c7k8xmKE&ab_channel=JavaTechie
 `./gradlew build`
 
 #### To start the server:
-`./gradlew bootrun`
+`./gradlew bootrun`# image-service
