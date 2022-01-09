@@ -3,9 +3,7 @@
 ## Upload and Download Images to AWS S3 Using Spring Boot
 
 ### Description:
-
-A Spring Boot program which allows for image upload, download, and deletion of files to Amazon S3 (
-simple storage service).
+A Spring Boot server with an API for image upload, download, and deletion via Amazon S3.
 
 ### Reference:
 
